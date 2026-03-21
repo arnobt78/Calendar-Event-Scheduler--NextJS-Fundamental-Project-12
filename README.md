@@ -1,14 +1,8 @@
-# Calendar-To-Do ReactVite Web Application
+# Calendar To-Do - Next.js, React, TypeScript, TailwindCSS, Framer Motion Fundamental Project 12
 
-![Screenshot 2024-09-27 at 16 33 26](https://github.com/user-attachments/assets/08b1e989-bdfb-40d1-9735-d02285edc3eb) ![Screenshot 2024-09-27 at 16 33 43](https://github.com/user-attachments/assets/8fce0427-d5dc-4169-b783-56cb3a967bd6)
+A modern, responsive, and interactive web application built using **React** and **Vite**. It combines the power of a calendar with a to-do/events organizer, allowing users to select any day of the month, set reminders for specific times, and manage events (add/edit/delete) with an intuitive and visually appealing interface. The project is designed for both learning and practical usage—ideal for anyone interested in React, Vite, and modern front-end development.
 
----
-
-## Project Summary
-
-Calendar-To-Do--ReactVite is a modern, responsive, and interactive web application built using **React** and **Vite**. It combines the power of a calendar with a to-do/events organizer, allowing users to select any day of the month, set reminders for specific times, and manage events (add/edit/delete) with an intuitive and visually appealing interface. The project is designed for both learning and practical usage—ideal for anyone interested in React, Vite, and modern front-end development.
-
-- **Live Demo:** [https://calendar-arnob.vercel.app/](https://calendar-arnob.vercel.app/)
+- **Live Demo:** [https://taskmate-calendar.vercel.app/](https://taskmate-calendar.vercel.app/)
 
 ---
 
@@ -80,17 +74,20 @@ Calendar-To-Do--ReactVite/
 Make sure you have [Node.js](https://nodejs.org/en/) installed on your machine.
 
 **2. Clone the Repository**
+
 ```bash
 git clone https://github.com/arnobt78/Calendar-To-Do--ReactVite.git
 cd Calendar-To-Do--ReactVite
 ```
 
 **3. Install Dependencies**
+
 ```bash
 npm install
 ```
 
 **4. Run the Development Server**
+
 ```bash
 npm run dev
 ```
@@ -125,25 +122,28 @@ Navigate to [http://localhost:5173/](http://localhost:5173/) to view your app.
 ## Component Overview
 
 ### `App.jsx`
+
 ```javascript
-import CalendarApp from './Components/CalendarApp'
-import './Components/CalendarApp.css'
+import CalendarApp from "./Components/CalendarApp";
+import "./Components/CalendarApp.css";
 
 const App = () => (
   <div className="container">
     <CalendarApp />
   </div>
-)
+);
 
-export default App
+export default App;
 ```
 
 ---
 
 ### `CalendarApp.jsx`
+
 Handles all state and logic for the calendar and event management system.
 
 **Key State Variables:**
+
 - `currentMonth`, `currentYear`: Calendar navigation.
 - `selectedDate`: Currently selected date.
 - `showEventPopup`: Popup visibility for event input.
@@ -152,6 +152,7 @@ Handles all state and logic for the calendar and event management system.
 - `editingEvent`: Stores the event being edited.
 
 **Core Functions:**
+
 - `prevMonth`/`nextMonth`: For navigating months.
 - `handleDayClick`: Shows event popup for selected day.
 - `handleEventSubmit`: Adds or updates events.
@@ -160,6 +161,7 @@ Handles all state and logic for the calendar and event management system.
 - `handleTimeChange`: Updates time input state.
 
 **Rendering:**
+
 - Calendar grid with days and highlights.
 - Event popup for input.
 - Scrollable event list with edit/delete actions.
@@ -167,7 +169,9 @@ Handles all state and logic for the calendar and event management system.
 ---
 
 ### `CalendarApp.css`
+
 Handles all visual aspects, including:
+
 - Layout (flexbox, aspect ratios)
 - Calendar grid styling
 - Responsive design (media queries)
@@ -179,6 +183,7 @@ Handles all visual aspects, including:
 ## Styling & Responsiveness
 
 The project uses **custom CSS** for all styling:
+
 - Modern dark theme with accent colors
 - Flexbox for layout management
 - Responsive grid and popup scaling
@@ -195,24 +200,24 @@ const handleEventSubmit = () => {
   const newEvent = {
     id: editingEvent ? editingEvent.id : Date.now(),
     date: selectedDate,
-    time: `${eventTime.hours.padStart(2, '0')}:${eventTime.minutes.padStart(2, '0')}`,
+    time: `${eventTime.hours.padStart(2, "0")}:${eventTime.minutes.padStart(2, "0")}`,
     text: eventText,
-  }
-  let updatedEvents = [...events]
+  };
+  let updatedEvents = [...events];
   if (editingEvent) {
     updatedEvents = updatedEvents.map((event) =>
       event.id === editingEvent.id ? newEvent : event,
-    )
+    );
   } else {
-    updatedEvents.push(newEvent)
+    updatedEvents.push(newEvent);
   }
-  updatedEvents.sort((a, b) => new Date(a.date) - new Date(b.date))
-  setEvents(updatedEvents)
-  setEventTime({ hours: '00', minutes: '00' })
-  setEventText('')
-  setShowEventPopup(false)
-  setEditingEvent(null)
-}
+  updatedEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+  setEvents(updatedEvents);
+  setEventTime({ hours: "00", minutes: "00" });
+  setEventText("");
+  setShowEventPopup(false);
+  setEditingEvent(null);
+};
 ```
 
 ---
@@ -221,14 +226,14 @@ const handleEventSubmit = () => {
 
 ```javascript
 const prevMonth = () => {
-  setCurrentMonth((prevMonth) => (prevMonth === 0 ? 11 : prevMonth - 1))
-  setCurrentYear((prevYear) => (currentMonth === 0 ? prevYear - 1 : prevYear))
-}
+  setCurrentMonth((prevMonth) => (prevMonth === 0 ? 11 : prevMonth - 1));
+  setCurrentYear((prevYear) => (currentMonth === 0 ? prevYear - 1 : prevYear));
+};
 
 const nextMonth = () => {
-  setCurrentMonth((prevMonth) => (prevMonth === 11 ? 0 : prevMonth + 1))
-  setCurrentYear((prevYear) => (currentMonth === 11 ? prevYear + 1 : prevYear))
-}
+  setCurrentMonth((prevMonth) => (prevMonth === 11 ? 0 : prevMonth + 1));
+  setCurrentYear((prevYear) => (currentMonth === 11 ? prevYear + 1 : prevYear));
+};
 ```
 
 ---
