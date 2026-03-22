@@ -13,7 +13,7 @@ export default function CalendarSkeleton() {
   return (
     <div className="flex w-full flex-col gap-8 sm:flex-row">
       {/* Calendar side skeleton */}
-      <div className="w-full space-y-4 sm:w-[40%]">
+      <div className="w-full space-y-4 sm:w-[50%]">
         <div className="h-12 w-40 animate-pulse rounded-lg bg-white/5" />
         <div className="flex items-center gap-3">
           <div className="h-8 w-28 animate-pulse rounded-lg bg-white/5" />
@@ -38,7 +38,7 @@ export default function CalendarSkeleton() {
         </div>
       </div>
       {/* Events side skeleton */}
-      <div className="w-full space-y-4 sm:w-[60%]">
+      <div className="w-full space-y-4 sm:w-[50%]">
         {Array.from({ length: 3 }).map((_, i) => (
           <div
             key={i}

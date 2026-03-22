@@ -15,6 +15,32 @@ export function cn(...inputs: ClassValue[]): string {
 }
 
 /**
+ * getEventStatus — Returns the temporal status of a calendar event date
+ * relative to today: "passed", "today", "tomorrow", or "someday".
+ */
+export function getEventStatus(
+  eventDate: Date,
+): "passed" | "today" | "tomorrow" | "someday" {
+  const now = new Date();
+  const todayMidnight = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+  );
+  const eventMidnight = new Date(
+    new Date(eventDate).getFullYear(),
+    new Date(eventDate).getMonth(),
+    new Date(eventDate).getDate(),
+  );
+  const diff = eventMidnight.getTime() - todayMidnight.getTime();
+  const ONE_DAY = 24 * 60 * 60 * 1000;
+  if (diff < 0) return "passed";
+  if (diff === 0) return "today";
+  if (diff === ONE_DAY) return "tomorrow";
+  return "someday";
+}
+
+/**
  * isSameDay — Checks if two Date objects represent the same calendar day.
  * Compares year, month, and date (ignores time).
  *

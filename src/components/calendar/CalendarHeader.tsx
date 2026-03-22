@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, useMemo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEventContext } from "@/context/EventContext";
 import { MONTHS_OF_YEAR } from "@/lib/constants";
@@ -17,11 +18,23 @@ import AnimatedContainer from "@/components/shared/AnimatedContainer";
  * - AnimatedContainer for slide-in-from-left entrance
  */
 export default function CalendarHeader() {
-  const { currentMonth, currentYear, prevMonth, nextMonth } = useEventContext();
+  const { currentMonth, currentYear, prevMonth, nextMonth, events } =
+    useEventContext();
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const monthEventCount = useMemo(() => {
+    if (!mounted) return 0;
+    return events.filter((e) => {
+      const d = new Date(e.date);
+      return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+    }).length;
+  }, [events, currentMonth, currentYear, mounted]);
 
   return (
     <AnimatedContainer direction="left" delay={0.1}>
-      <h1 className="font-[family-name:var(--font-bebas-neue)] text-5xl tracking-wider text-white sm:text-6xl lg:text-7xl">
+      <h1 className="font-[family-name:var(--font-bebas-neue)] text-4xl tracking-wider text-white sm:text-5xl">
         Calendar
       </h1>
 
@@ -30,6 +43,12 @@ export default function CalendarHeader() {
           {MONTHS_OF_YEAR[currentMonth]},
         </h2>
         <h2 className="text-lg text-white/70 sm:text-xl">{currentYear}</h2>
+
+        {monthEventCount > 0 && (
+          <span className="rounded-full border border-sky-500/30 bg-sky-500/20 px-2.5 py-0.5 text-xs font-bold text-sky-300">
+            {monthEventCount}
+          </span>
+        )}
 
         <div className="ml-auto flex gap-2">
           <RippleButton

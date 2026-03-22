@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useEventContext } from "@/context/EventContext";
 import { DAYS_OF_WEEK } from "@/lib/constants";
 import { cn } from "@/lib/utils";
@@ -23,9 +23,25 @@ export default function CalendarGrid() {
     daysInMonth,
     firstDayOfMonth,
     handleDayClick,
+    events,
   } = useEventContext();
 
   const today = useMemo(() => new Date(), []);
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const getEventsForDay = (day: number) => {
+    if (!mounted) return [];
+    return events.filter((e) => {
+      const d = new Date(e.date);
+      return (
+        d.getDate() === day &&
+        d.getMonth() === currentMonth &&
+        d.getFullYear() === currentYear
+      );
+    });
+  };
 
   const emptySlots = useMemo(
     () => Array.from({ length: firstDayOfMonth }, (_, i) => i),
@@ -75,22 +91,41 @@ export default function CalendarGrid() {
           />
         ))}
 
-        {dayNumbers.map((day) => (
-          <span
-            key={day}
-            onClick={() => handleDayClick(day)}
-            className={cn(
-              "flex aspect-square w-[calc(100%/7)] cursor-pointer items-center justify-center text-sm transition-all sm:text-base",
-              isPast(day) && !isToday(day)
-                ? "cursor-default text-white/25 hover:text-white/35"
-                : "text-white/80 hover:text-white",
-              isToday(day) &&
-                "rounded-full bg-amber-500 text-white shadow-[0_0_1.5rem_1rem_rgba(239,144,17,0.3)]",
-            )}
-          >
-            {day}
-          </span>
-        ))}
+        {dayNumbers.map((day) => {
+          const dayEvents = getEventsForDay(day);
+          return (
+            <span
+              key={day}
+              onClick={() => handleDayClick(day)}
+              className={cn(
+                "relative flex aspect-square w-[calc(100%/7)] cursor-pointer items-center justify-center",
+                isPast(day) && !isToday(day) && "cursor-default",
+              )}
+            >
+              <span
+                className={cn(
+                  "relative flex h-10 w-10 items-center justify-center rounded-full text-sm transition-[color] sm:h-12 sm:w-12 sm:text-base",
+                  isPast(day) && !isToday(day)
+                    ? "text-white/25 hover:text-white/35"
+                    : "text-white/80 hover:text-white",
+                  isToday(day) &&
+                    "bg-emerald-500 text-white shadow-[0_0_1.5rem_1rem_rgba(16,185,129,0.4)] ring-2 ring-emerald-400/30",
+                  mounted &&
+                    dayEvents.length > 0 &&
+                    !isToday(day) &&
+                    "ring-1 ring-sky-400/50",
+                )}
+              >
+                {day}
+              </span>
+              {mounted && dayEvents.length > 1 && !isToday(day) && (
+                <span className="absolute right-5 top-5 z-10 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-[9px] font-bold leading-none text-white shadow-sm">
+                  {dayEvents.length}
+                </span>
+              )}
+            </span>
+          );
+        })}
       </div>
     </AnimatedContainer>
   );
