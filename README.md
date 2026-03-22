@@ -9,7 +9,7 @@
 
 A modern, responsive web app that merges a **monthly calendar** with a **timed event / to-do list**. Pick future (or today’s) dates, set hours and minutes, write a short note, then **add**, **edit**, or **delete** events. The UI uses a dark **glassmorphism** style, subtle **Framer Motion** transitions, and **Sonner** toasts for feedback. All event data lives in the browser via **`localStorage`**—there is **no server database** and **no REST API** in this repo.
 
-**Live demo (production):** [https://taskmate-calendar.vercel.app/](https://taskmate-calendar.vercel.app/)
+**Live demo:** [https://taskmate-calendar.vercel.app/](https://taskmate-calendar.vercel.app/)
 
 ---
 
