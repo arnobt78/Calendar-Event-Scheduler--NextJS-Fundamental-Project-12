@@ -10,6 +10,10 @@ import RippleButton from "@/components/shared/RippleButton";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
 import EventStatusBadge from "@/components/shared/EventStatusBadge";
 
+/**
+ * Pure helper: human-readable date string + truncated note for cards and dialogs.
+ * Keeps presentation logic out of JSX for easier testing and reuse.
+ */
 function formatEventLabel(event: CalendarEvent) {
   const d = new Date(event.date);
   const date = `${MONTHS_OF_YEAR[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
@@ -18,6 +22,11 @@ function formatEventLabel(event: CalendarEvent) {
   return { date, note };
 }
 
+/**
+ * EventList — Right column schedule panel.
+ * - Lists all events grouped by calendar month (reduce → { label, events }[]).
+ * - Edit/delete open ConfirmDialog first; on confirm, delegates to context handlers.
+ */
 export default function EventList() {
   const { events, handleEditEvent, handleDeleteEvent } = useEventContext();
 
@@ -36,7 +45,7 @@ export default function EventList() {
   // Use real events only after mount; before that, act as empty for hydration match
   const displayEvents = mounted ? events : [];
 
-  // Group events by "Month YYYY" label, preserving sorted order
+  /* Walk sorted events once; push into existing month bucket or start a new group header. */
   const groupedEvents = displayEvents.reduce<
     { label: string; events: CalendarEvent[] }[]
   >((acc, event) => {

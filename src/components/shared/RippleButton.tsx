@@ -1,5 +1,9 @@
 "use client";
 
+/**
+ * RippleButton — Native <button> with Material-style ripple + forwarded props (aria, type, disabled).
+ * Composes useRipple: must keep `relative overflow-hidden` on the button for clipping.
+ */
 import { useRipple } from "@/hooks/useRipple";
 import { cn } from "@/lib/utils";
 
@@ -16,8 +20,8 @@ function RippleButton({
   const { containerRef, createRipple } = useRipple();
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    createRipple(e);
-    onClick?.(e);
+    createRipple(e); // visual feedback first
+    onClick?.(e); // then parent handler (e.g. navigate, submit)
   };
 
   return (

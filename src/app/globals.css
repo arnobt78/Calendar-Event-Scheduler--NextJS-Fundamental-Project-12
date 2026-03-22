@@ -1,3 +1,8 @@
+/**
+ * Global styles entry for the App Router.
+ * Tailwind v4 `@import "tailwindcss"` pulls utilities; `@theme` extends design tokens for the app + shadcn-style vars.
+ * Ripple + CTA shine keyframes support RippleButton / CTAShineButton (see RIPPLE_BUTTON_EFFECT.md).
+ */
 @import "tailwindcss";
 
 /*

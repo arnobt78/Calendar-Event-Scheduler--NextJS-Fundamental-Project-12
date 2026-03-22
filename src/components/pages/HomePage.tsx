@@ -31,6 +31,7 @@ export default function HomePage() {
       <div className="relative z-10 mx-auto w-full max-w-9xl px-4 py-8 sm:px-6 lg:px-8">
         <AnimatedContainer direction="bottom" delay={0}>
           <EventProvider>
+            {/* Suspense: shows CalendarSkeleton while lazy/async children resolve (Next may stream this shell). */}
             <Suspense fallback={<CalendarSkeleton />}>
               <CalendarApp />
             </Suspense>

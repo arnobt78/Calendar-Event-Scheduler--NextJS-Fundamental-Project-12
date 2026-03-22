@@ -24,6 +24,7 @@ export default function CalendarHeader() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  /* Badge next to month name: how many events fall in the currently displayed month/year. */
   const monthEventCount = useMemo(() => {
     if (!mounted) return 0;
     return events.filter((e) => {

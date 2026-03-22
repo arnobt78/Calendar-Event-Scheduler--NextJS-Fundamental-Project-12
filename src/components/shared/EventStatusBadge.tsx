@@ -1,3 +1,7 @@
+/**
+ * EventStatusBadge — Read-only pill derived from calendar date vs "today" (see getEventStatus).
+ * No "use client" needed: pure props → pure render (safe inside Server or Client parents).
+ */
 import { getEventStatus } from "@/lib/utils";
 
 const STATUS_CONFIG = {

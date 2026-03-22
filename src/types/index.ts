@@ -1,4 +1,9 @@
 /**
+ * @file Shared contracts for calendar UI + `EventContext`.
+ * Keeping types here avoids circular imports and documents the public shape of hooks/context.
+ */
+
+/**
  * CalendarEvent — Represents a single calendar event/todo item.
  * Each event has a unique id, associated date, time slot, and description text.
  *

@@ -36,5 +36,5 @@ export const MONTHS_OF_YEAR = [
 /** Maximum characters allowed in an event description */
 export const MAX_EVENT_TEXT_LENGTH = 60;
 
-/** Default time for new events */
+/** Empty strings until user types; blur handler in useEvents pads to "00" if left blank. */
 export const DEFAULT_EVENT_TIME = { hours: "", minutes: "" } as const;

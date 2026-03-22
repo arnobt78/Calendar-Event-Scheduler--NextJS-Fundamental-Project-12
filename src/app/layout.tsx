@@ -1,3 +1,9 @@
+/**
+ * Root App Router layout (Server Component).
+ * - Loads global CSS and Google fonts (Comfortaa + Bebas Neue).
+ * - Exports static `metadata` for SEO (title, Open Graph, icons, robots).
+ * - Renders Sonner toasts for client notifications from anywhere under this tree.
+ */
 import type { Metadata } from "next";
 import { Comfortaa, Bebas_Neue } from "next/font/google";
 import { Toaster } from "sonner";
@@ -23,16 +29,90 @@ const bebasNeue = Bebas_Neue({
   display: "swap",
 });
 
+/** Production / canonical site origin (see README live demo). */
+const SITE_URL_FALLBACK = "https://taskmate-calendar.vercel.app";
+
+/** Builds a valid origin for `metadataBase` so Open Graph URLs resolve even if `.env` is mistyped. */
+function getMetadataBase(): URL {
+  const raw =
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() || SITE_URL_FALLBACK;
+  try {
+    return new URL(raw);
+  } catch {
+    return new URL(SITE_URL_FALLBACK);
+  }
+}
+
+const DEFAULT_PAGE_TITLE =
+  "Calendar To-Do — Next.js calendar, events & todos (TypeScript, Tailwind CSS, Framer Motion)";
+
+const META_DESCRIPTION =
+  "TaskMate Calendar: a responsive monthly calendar and event scheduler. Add, edit, and delete timed tasks with local persistence. Built with Next.js, React 19, TypeScript, Tailwind CSS, and Framer Motion. Portfolio project by Arnob Mahmud — contact@arnobmahmud.com.";
+
+const META_KEYWORDS: string[] = [
+  "calendar",
+  "to-do",
+  "todo",
+  "task planner",
+  "event scheduler",
+  "schedule",
+  "Next.js",
+  "React",
+  "TypeScript",
+  "Tailwind CSS",
+  "Framer Motion",
+  "TaskMate Calendar",
+  "Arnob Mahmud",
+];
+
 /**
- * SEO metadata — uses NEXT_PUBLIC_APP_TITLE env var with fallback.
- * Favicon is served from /public/favicon.ico automatically by Next.js.
+ * SEO metadata — title override via NEXT_PUBLIC_APP_TITLE; canonical URL via NEXT_PUBLIC_SITE_URL.
+ * Icons: /public/favicon.ico (add opengraph-image.png later for richer social previews).
  */
 export const metadata: Metadata = {
-  title: process.env.NEXT_PUBLIC_APP_TITLE ?? "Calendar Todo",
-  description:
-    "A modern calendar and todo application built with Next.js, TypeScript, and Tailwind CSS — a beginner-friendly React/Next.js tutorial project.",
+  metadataBase: getMetadataBase(),
+  title: {
+    default: process.env.NEXT_PUBLIC_APP_TITLE?.trim() || DEFAULT_PAGE_TITLE,
+    template: "%s | TaskMate Calendar",
+  },
+  description: META_DESCRIPTION,
+  applicationName: "TaskMate Calendar",
+  authors: [{ name: "Arnob Mahmud", url: "https://www.arnobmahmud.com" }],
+  creator: "Arnob Mahmud",
+  publisher: "Arnob Mahmud",
+  keywords: META_KEYWORDS,
   icons: {
-    icon: "/favicon.ico",
+    icon: [{ url: "/favicon.ico", type: "image/x-icon" }],
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
+  },
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "/",
+    siteName: "TaskMate Calendar",
+    title:
+      process.env.NEXT_PUBLIC_APP_TITLE?.trim() || DEFAULT_PAGE_TITLE,
+    description: META_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary",
+    title:
+      process.env.NEXT_PUBLIC_APP_TITLE?.trim() || DEFAULT_PAGE_TITLE,
+    description: META_DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  category: "productivity",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
   },
 };
 
@@ -58,7 +138,9 @@ export default function RootLayout({
         suppressHydrationWarning
         className="min-h-screen bg-[#0a0a0f] font-[family-name:var(--font-comfortaa)] text-white antialiased"
       >
+        {/* Route segments render here (e.g. app/page.tsx → HomePage). */}
         {children}
+        {/* Global toast host: `toast()` / `toast.custom()` from client code appears here. */}
         <Toaster
           position="bottom-right"
           theme="dark"

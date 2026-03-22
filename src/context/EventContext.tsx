@@ -32,6 +32,7 @@ const EventContext = createContext<CalendarContextType | null>(null);
  */
 export function EventProvider({ children }: { children: React.ReactNode }) {
   const calendar = useCalendar();
+  /* Month/year drive which grid is shown and how new Date(y, m, day) is built on day click. */
   const events = useEvents(calendar.currentMonth, calendar.currentYear);
 
   /* Combine both hook values into a single context value */

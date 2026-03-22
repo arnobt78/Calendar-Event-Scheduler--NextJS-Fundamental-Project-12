@@ -7,6 +7,12 @@ import { MAX_EVENT_TEXT_LENGTH, MONTHS_OF_YEAR } from "@/lib/constants";
 import RippleButton from "@/components/shared/RippleButton";
 import CTAShineButton from "@/components/shared/CTAShineButton";
 
+/**
+ * EventPopup — Full-screen modal (fixed overlay) for create/edit.
+ * - Controlled by `showEventPopup` from context; backdrop click closes.
+ * - Time fields are text + numeric inputMode (custom validation in useEvents).
+ * - `editingEvent` switches title and primary button label.
+ */
 const DAY_NAMES = [
   "Sunday",
   "Monday",
@@ -31,6 +37,7 @@ export default function EventPopup() {
     setShowEventPopup,
   } = useEventContext();
 
+  /* Character counter UX: warn when close to MAX_EVENT_TEXT_LENGTH (from constants). */
   const remaining = MAX_EVENT_TEXT_LENGTH - eventText.length;
   const isNearLimit = remaining <= 15;
   const isAtLimit = remaining === 0;

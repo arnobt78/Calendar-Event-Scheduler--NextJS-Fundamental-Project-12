@@ -17,6 +17,7 @@ import { getDaysInMonth, getFirstDayOfMonth } from "@/lib/utils";
  * const { currentMonth, currentYear, prevMonth, nextMonth } = useCalendar();
  */
 export function useCalendar() {
+  /* Initial view = user's current month/year when the provider first mounts. */
   const today = new Date();
 
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());

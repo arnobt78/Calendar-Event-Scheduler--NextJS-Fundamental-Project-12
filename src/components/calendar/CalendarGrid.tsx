@@ -26,11 +26,14 @@ export default function CalendarGrid() {
     events,
   } = useEventContext();
 
+  /* Fixed "today" for this mount — avoids the grid re-computing every render on a new Date(). */
   const today = useMemo(() => new Date(), []);
 
+  /* After mount: safe to compare events from localStorage (avoids SSR/hydration dot mismatch on cells). */
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  /** Events whose calendar day matches this cell (month view only). */
   const getEventsForDay = (day: number) => {
     if (!mounted) return [];
     return events.filter((e) => {
@@ -58,6 +61,7 @@ export default function CalendarGrid() {
     currentMonth === today.getMonth() &&
     currentYear === today.getFullYear();
 
+  /** True if the cell is before today (still clickable visually; handleDayClick blocks new events). */
   const isPast = (day: number): boolean => {
     const date = new Date(currentYear, currentMonth, day);
     const todayMidnight = new Date(
@@ -93,6 +97,7 @@ export default function CalendarGrid() {
 
         {dayNumbers.map((day) => {
           const dayEvents = getEventsForDay(day);
+          // Outer span = click target; inner = circle. handleDayClick only opens popup for today/future.
           return (
             <span
               key={day}

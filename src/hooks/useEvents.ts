@@ -12,6 +12,7 @@ import type { CalendarEvent, EventTime } from "@/types";
 import { isSameDay } from "@/lib/utils";
 import { DEFAULT_EVENT_TIME } from "@/lib/constants";
 
+/* Short month names for toast subtitles (lighter than importing MONTHS_OF_YEAR). */
 const MONTHS = [
   "Jan",
   "Feb",
@@ -31,10 +32,12 @@ function formatToastDate(date: Date, time: string) {
   return `${MONTHS[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} · ${time}`;
 }
 
+/** Keeps toast lines readable; full text still visible in the list UI. */
 function truncate(text: string, max = 36) {
   return text.length > max ? text.slice(0, max) + "…" : text;
 }
 
+/** Sonner custom layout: icon + title + subtitle, styled per variant (add/edit/delete/error). */
 function showToast(
   variant: "add" | "edit" | "delete" | "error",
   title: string,
@@ -118,12 +121,14 @@ const STORAGE_KEY = "calendar-todo-events";
 /** Stable empty list for SSR + hydration (getServerSnapshot must keep same identity). */
 const EMPTY_EVENTS: CalendarEvent[] = [];
 
+/* useSyncExternalStore subscriber registry + snapshot cache (avoids reparsing JSON every render). */
 const listeners = new Set<() => void>();
 
 let cacheValid = false;
 let cacheKey: string | null = null;
 let cacheEvents: CalendarEvent[] = EMPTY_EVENTS;
 
+/** JSON.parse + revive `Date` — JSON stores dates as ISO strings. */
 function parseStored(raw: string | null): CalendarEvent[] {
   if (!raw) return EMPTY_EVENTS;
   try {
@@ -135,6 +140,7 @@ function parseStored(raw: string | null): CalendarEvent[] {
   }
 }
 
+/** Fresh read from localStorage for writes (bypasses cache so mutations always see latest). */
 function readEventsFromStorage(): CalendarEvent[] {
   if (typeof window === "undefined") return EMPTY_EVENTS;
   try {
@@ -145,6 +151,7 @@ function readEventsFromStorage(): CalendarEvent[] {
   }
 }
 
+/** Client-only snapshot for subscribers; uses cache when raw storage string unchanged. */
 function getSnapshot(): CalendarEvent[] {
   if (typeof window === "undefined") return EMPTY_EVENTS;
   const raw = localStorage.getItem(STORAGE_KEY);
@@ -164,11 +171,13 @@ function getServerSnapshot(): CalendarEvent[] {
   return EMPTY_EVENTS;
 }
 
+/** Invalidate cache + notify all useSyncExternalStore subscribers (same-tab + after persist). */
 function emitChange() {
   cacheValid = false;
   listeners.forEach((l) => l());
 }
 
+/** Registers listener; also listens to `storage` for updates from other tabs. */
 function subscribe(onStoreChange: () => void) {
   if (typeof window === "undefined") return () => {};
   listeners.add(onStoreChange);
@@ -185,6 +194,7 @@ function subscribe(onStoreChange: () => void) {
   };
 }
 
+/** Serializes events to localStorage then triggers a reactive update across the app. */
 function persistEvents(next: CalendarEvent[]) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
@@ -195,12 +205,14 @@ function persistEvents(next: CalendarEvent[]) {
 }
 
 export function useEvents(currentMonth: number, currentYear: number) {
+  /* External store = localStorage; server/hydration use empty snapshot — see getServerSnapshot. */
   const events = useSyncExternalStore(
     subscribe,
     getSnapshot,
     getServerSnapshot,
   );
 
+  /* Always read latest from storage before applying updater — avoids stale closures with sync store. */
   const setEvents = useCallback(
     (
       updater: CalendarEvent[] | ((prev: CalendarEvent[]) => CalendarEvent[]),
@@ -345,6 +357,10 @@ export function useEvents(currentMonth: number, currentYear: number) {
     setEventTime((prev) => ({ ...prev, [name]: cleaned }));
   };
 
+  /**
+   * On blur: normalize empty → "00", clamp hours 0–23 / minutes 0–59, pad with leading zero.
+   * Pairs with handleTimeChange for a controlled-but-forgiving time input UX.
+   */
   const handleTimeBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     // Pad to 2 digits on blur so display stays clean

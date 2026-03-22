@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint && eslint . --max-warnings 0",
+    "lint:fix": "next lint --fix && eslint . --fix --max-warnings 0"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

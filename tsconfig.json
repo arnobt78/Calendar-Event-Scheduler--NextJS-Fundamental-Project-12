@@ -1,4 +1,5 @@
 {
+  // Next.js + strict TS: `@/*` imports map to `src/*`; `plugins.next` enables typed routes / app dir checks.
   "compilerOptions": {
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],

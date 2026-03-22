@@ -1,5 +1,11 @@
 "use client";
 
+/**
+ * ConfirmDialog — Small modal for destructive or important actions (edit/delete flow).
+ * - `variant` picks icon, border, and confirm button styling from CONFIG.
+ * - Backdrop click = cancel; inner card uses stopPropagation so clicks don't close accidentally.
+ * - z-index 60 so it can stack above EventPopup (z-50) when both exist in the tree.
+ */
 import { AnimatePresence, motion } from "framer-motion";
 import { PencilLine, Trash2 } from "lucide-react";
 import RippleButton from "@/components/shared/RippleButton";
@@ -13,6 +19,7 @@ interface ConfirmDialogProps {
   onCancel: () => void;
 }
 
+/* Single source of truth for theming per variant — keeps JSX declarative. */
 const CONFIG = {
   edit: {
     icon: PencilLine,

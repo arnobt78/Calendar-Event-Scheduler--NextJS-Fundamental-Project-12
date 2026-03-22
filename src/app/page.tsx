@@ -9,6 +9,8 @@ import HomePage from "@/components/pages/HomePage";
  * Best practice: Keep server components thin — only SSR-related code here.
  * All interactive/client-side logic lives in components/pages/HomePage.tsx.
  *
+ * Note: This app has no `app/api/*` routes — no REST handlers here; data is client + localStorage.
+ *
  * @see https://nextjs.org/docs/app/building-your-application/rendering/server-components
  */
 export default function Home() {
