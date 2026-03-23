@@ -45,7 +45,8 @@ export default function EventList() {
   // Use real events only after mount; before that, act as empty for hydration match
   const displayEvents = mounted ? events : [];
 
-  /* Walk sorted events once; push into existing month bucket or start a new group header. */
+  /* Walk sorted events once; push into existing month bucket or start a new group header.
+     Within each bucket, events are sorted by date then time (earliest first). */
   const groupedEvents = displayEvents.reduce<
     { label: string; events: CalendarEvent[] }[]
   >((acc, event) => {
@@ -54,6 +55,12 @@ export default function EventList() {
     const existing = acc.find((g) => g.label === label);
     if (existing) {
       existing.events.push(event);
+      existing.events.sort((a, b) => {
+        const dateA = new Date(a.date).setHours(0, 0, 0, 0);
+        const dateB = new Date(b.date).setHours(0, 0, 0, 0);
+        if (dateA !== dateB) return dateA - dateB;
+        return (a.time ?? "").localeCompare(b.time ?? "");
+      });
     } else {
       acc.push({ label, events: [event] });
     }
