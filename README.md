@@ -11,7 +11,7 @@ A modern, responsive web app that merges a **monthly calendar** with a **timed e
 
 **Live demo:** [https://taskmate-calendar.vercel.app/](https://taskmate-calendar.vercel.app/)
 
----
+![Image](https://github.com/user-attachments/assets/44443874-b415-4b24-97b5-51a2b351dc53)
 
 ## Table of contents
 
