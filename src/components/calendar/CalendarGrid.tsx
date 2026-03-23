@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useEventContext } from "@/context/EventContext";
 import { DAYS_OF_WEEK } from "@/lib/constants";
 import { cn } from "@/lib/utils";
@@ -26,12 +26,19 @@ export default function CalendarGrid() {
     events,
   } = useEventContext();
 
-  /* Fixed "today" for this mount — avoids the grid re-computing every render on a new Date(). */
-  const today = useMemo(() => new Date(), []);
+  /**
+   * today is set client-side only (via useEffect) to reflect the user's local timezone.
+   * Using useMemo/new Date() here would run on Vercel's UTC servers and produce the
+   * wrong date for users in timezones behind UTC.
+   */
+  const [today, setToday] = useState<Date | null>(null);
 
-  /* After mount: safe to compare events from localStorage (avoids SSR/hydration dot mismatch on cells). */
+  /* After mount: set today in local timezone + allow event dots from localStorage. */
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    setToday(new Date());
+    setMounted(true);
+  }, []);
 
   /** Events whose calendar day matches this cell (month view only). */
   const getEventsForDay = (day: number) => {
@@ -56,13 +63,18 @@ export default function CalendarGrid() {
     [daysInMonth],
   );
 
-  const isToday = (day: number): boolean =>
-    day === today.getDate() &&
-    currentMonth === today.getMonth() &&
-    currentYear === today.getFullYear();
+  const isToday = (day: number): boolean => {
+    if (!today) return false;
+    return (
+      day === today.getDate() &&
+      currentMonth === today.getMonth() &&
+      currentYear === today.getFullYear()
+    );
+  };
 
   /** True if the cell is before today (still clickable visually; handleDayClick blocks new events). */
   const isPast = (day: number): boolean => {
+    if (!today) return false;
     const date = new Date(currentYear, currentMonth, day);
     const todayMidnight = new Date(
       today.getFullYear(),
