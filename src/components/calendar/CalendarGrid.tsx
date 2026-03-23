@@ -136,7 +136,7 @@ export default function CalendarGrid() {
                 {day}
               </span>
               {mounted && dayEvents.length > 1 && !isToday(day) && (
-                <span className="absolute right-5 top-5 z-10 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-[9px] font-bold leading-none text-white shadow-sm">
+                <span className="absolute right-7 top-7 z-10 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-[9px] font-bold leading-none text-white shadow-sm">
                   {dayEvents.length}
                 </span>
               )}
